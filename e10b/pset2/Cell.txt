@@ -1,0 +1,21 @@
+Consider the following classes:
+    public class Cell { ... }
+    public class BloodCell extends Cell { ... }
+    public class RedBloodCell extends BloodCell { ... }
+
+For each of the following assignments, say if it is valid or invalid. In a clear and concise sentence, explain why the illegal ones are invalid.
+    ✦ Cell c = new BloodCell();
+    - valid
+    - class BloodCell() is a subclass class class Cell()
+
+    ✦ Cell c = new RedBloodCell();
+    - valid
+    - class RedBloodCell() is a subclass class Cell()
+
+    ✦ BloodCell c = new RedBloodCell();
+    - valid
+    - class RedBloodCell() is a subcless of class BloodCell()
+
+    ✦ RedBloodCell c = new BloodCell();
+    - invalid
+    - class BloodCell() is not a subclass of class RedBloodCell(); e.g. a BloodCell() is not a type of RedBloodCell(); is not a valid heirarchy.
