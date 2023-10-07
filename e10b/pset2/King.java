@@ -1,7 +1,4 @@
-//  King.java
-//
 //  A king can move one square in any direction.
-//
 
 class King extends Piece {
     boolean attackingThisLocation(int indexRow, int indexColumn) {

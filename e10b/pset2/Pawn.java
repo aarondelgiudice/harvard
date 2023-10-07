@@ -1,3 +1,5 @@
+// A pawn may attack diagonally by one square to the left or right.
+
 class Pawn extends Piece {
     boolean attackingThisLocation(int indexRow, int indexColumn) {
         int columnDiff = pieceColumn - indexColumn;
