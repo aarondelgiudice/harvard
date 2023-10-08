@@ -5,13 +5,13 @@ public class ShipTest {
         // define array of Ship objects to test inheritance
         Ship[] shipsArray = new Ship[6];
 
-        shipsArray[0] = new Cruiseship(
+        shipsArray[0] = new CruiseShip(
                 "SS Gosling",
                 1995,
                 Ship.engineType.STEAM_ENGINE,
                 1000);
 
-        shipsArray[1] = new Cruiseship(
+        shipsArray[1] = new CruiseShip(
                 "SS Sheridan",
                 1995,
                 Ship.engineType.STEAM_TURBINE,
