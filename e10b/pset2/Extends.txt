@@ -1,0 +1,40 @@
+For each of the following relationships, say if it make sense or does not make sense.
+    (a) class Oven extends Kitchen
+    - makes sense.
+    - An oven (usually) exists in a Kitchen, so Oven "is-a" part of a Kitchen makes sense. Though `Class Oven extends Appliance` may be a better hierarchy, rather than the appliance->room hierarchy applied in the statement.
+
+    (b) class Guitar extends Instrument
+    - makes sense
+    - a guitar "is-a" type of instrument; heirarchy is logical.
+
+    (c) class Person extends Employee
+    - does not make sense
+    - a person is not a type of employee; heirarchy is not logical. An employee "is-a" type of person, `class Employee extends Person` would make more sense. That said, if employees could be a person vs. a robot (is some near distant future) then the hierarchy of Employee->person could make sense if there is another type of non-person employee (e.g. a robot).
+
+    (d) class Ferrari extends Engine
+    - does not make sense.
+    - An engine is a part of a Ferrari, so the relationship `class Engine extends Ferrari` makes more sense. That said, if, for example, an automobile factory produces multiple types of engines, the statement could be correct. As a Ferrari Engine could be one of many types of engines that a factory produces.
+
+    (e) class FriedEgg extends Food
+    - makes sense.
+    - FriedEgg "is-a" type of Food.
+
+    (f) class Beagle extends Pet
+    - makes sense.
+    - while Beagle "is-a" type of Pet, a better hierarchy could be Beagle->Dog->Pet.
+
+    (g) class Container extends Jar
+    - does not make sense
+    - A Jar "is-a" type of container, there other way around makes less sense.
+
+    (h) class Beverage extends Martini
+    - does not make sense.
+    - A Martini "is-a" type of beverage (vs. the opposite). Though we may all be a little happier if all beverages were a type of martini...
+
+    (i) class Metal extends Titanium
+    - does not make sense.
+    - Titanium should extend the Metal class, as titanium is a specific type of metal.
+
+    (j) class RollingStones extends RockBand
+    - makes sense.
+    - Although some people may class the Stones a blues-rock band, the "is-a" relationship of RockBand->RollingStones makes sense.
