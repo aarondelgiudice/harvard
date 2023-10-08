@@ -30,14 +30,14 @@ class Chessboard {
             p = new Bishop();
         else if (answer.charAt(0) == 'k' || answer.charAt(0) == 'K')
             p = new King();
-        else if (answer.charAt(0) == 'n' || answer.charAt(0) == 'n')
-            p = new Knight();
         else if (answer.charAt(0) == 'p' || answer.charAt(0) == 'P')
             p = new Pawn();
         else if (answer.charAt(0) == 'q' || answer.charAt(0) == 'Q')
             p = new Queen();
-        else
+        else if (answer.charAt(0) == 'r' || answer.charAt(0) == 'R')
             p = new Rook();
+        else
+            p = new Knight();
 
         p.placeOnChessBoard();
 
