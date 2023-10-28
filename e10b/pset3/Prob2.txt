@@ -1,0 +1,16 @@
+The Java compiler could through a NullPointerException if the code references a null object.
+For example, if we wrote similar code to Prob1.java but intentionally defined `args` as null, the code would throw a NullPointerException:
+
+public class Prob1 {
+    public static void main(String[] vargs) {
+        // will throw a NullPointerException
+        String[] args = null;
+        for (int i = args.length - 1; i >= 0; i--) {
+            System.out.println(args[i]);
+        }
+    }
+}
+
+THe compile won't complain and will compile the program without issue, because the NullPointerException is a unchecked exception.
+An unchecked vs. checked exception is usually due to a programming error (attempting to access a null object) vs. an external error such as a missing file.
+The compiler will force us to handle checked exceptions, but in the case of unchecked exceptions it would make more sense to fix the programming bug rather than force the compile to resolve it.
