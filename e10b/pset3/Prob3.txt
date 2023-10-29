@@ -1,0 +1,12 @@
+The code will loop forever because the for loop is causing a.size() to increase with each iteration.
+The termination condition of the for loop is i < a.size() and at each step of the for loop the code is adding another element to a, thus increasing a.size().
+
+A better way to write thise code could be to retain the original value of a.size() in a variable and use that as the termination condition of the for loop:
+    int aSize = a.size();
+    for (int i=0; i < aSize; i++) a.add(2*i, "NOT");
+
+Note that the add method inside the for loop was changed from add an element at index i to add an element at index 2*i, this is because we're essentially doubling the number of elements in the for loop by adding a "NOT" value before each exisiting value in a.
+
+For example, at iteration 0 the for loop will add "NOT" to index postion 0 (i=0; 2*i==0;).
+At the next step, the for loop will add "NOT" to index position 2 (i=1; 2*i==2;).
+This is because the first value in the for loop, "Now" is no longer at the 0 index position, but was shifted to the 1 index postion during the previous step of the for loop.
