@@ -18,13 +18,13 @@ Date:       2023-11-13
 
 2. Submission: MailLayout.java
 
-    3. Submission:
+Solve either problem [3], or both problems [4] and [5].
 
-    -- or --
+3. Submission:
 
-    4. Submission:
+4. Submission:
 
-    5. Submission:
+5. Submission:
 
 6. Submission: FifteenPuzzle.java
 
