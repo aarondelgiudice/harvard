@@ -20,11 +20,11 @@ Date:       2023-11-13
 
 Solve either problem [3], or both problems [4] and [5].
 
-3. Submission:
+3. Submission: TrafficLight.java
 
-4. Submission:
+4. Submission: n/a
 
-5. Submission:
+5. Submission: n/a
 
 6. Submission: FifteenPuzzle.java
 
