@@ -1,86 +1,79 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
+import java.io.FileWriter;
+import java.io.IOException;
 
-public class MailLayout extends JFrame {
-    private JTextField toField, ccField, bccField, subjectField;
-    private JComboBox fromBox;
-    private JTextArea messageArea;
-    private JButton sendButton;
+public class MailLayout {
+    private JFrame frame;
+    private JTextField to, cc, bcc, subject;
+    private JComboBox<String> from;
+    private JTextArea message;
+    private JButton send;
+    private String[] emailList = { "aarondelgiudice@gmail.com", "dwhabermehl@gmail.com", "hleitner@harvard.edu" };
 
     public MailLayout() {
-        setTitle("New Message");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        // create the JFrame
+        frame = new JFrame("New Message");
+        frame.setSize(500, 500);
+        frame.setLayout(new BorderLayout());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // flow layout
-        getContentPane().setLayout(new FlowLayout());
+        // top, cc, bcc, subject, from fields
+        JPanel topPanel = new JPanel(new GridLayout(5, 2, 5, 5));
+        topPanel.add(new JLabel("To:"));
+        to = new JTextField();
+        topPanel.add(to);
 
-        // add to, cc, bcc, etc. fields
-        add(new JLabel("To:"));
-        toField = new JTextField(20);
-        add(toField);
+        topPanel.add(new JLabel("Cc:"));
+        cc = new JTextField();
+        topPanel.add(cc);
 
-        add(new JLabel("Cc:"));
-        ccField = new JTextField(20);
-        add(ccField);
+        topPanel.add(new JLabel("Bcc:"));
+        bcc = new JTextField();
+        topPanel.add(bcc);
 
-        add(new JLabel("Bcc:"));
-        bccField = new JTextField(20);
-        add(bccField);
+        topPanel.add(new JLabel("Subject:"));
+        subject = new JTextField();
+        subject.addActionListener(e -> updateTitle());
+        topPanel.add(subject);
 
-        add(new JLabel("Subject:"));
-        subjectField = new JTextField(20);
-        add(subjectField);
+        topPanel.add(new JLabel("From:"));
+        from = new JComboBox<>(emailList);
+        topPanel.add(from);
 
-        add(new JLabel("From:"));
-        fromBox = new JComboBox(new String[] { "student1<email1@harvard.edu>", "student2<email2@harvard.edu>",
-                "student3<email3@harvard.edu>" });
-        add(fromBox);
+        frame.add(topPanel, BorderLayout.NORTH);
 
-        messageArea = new JTextArea(5, 20);
-        add(new JScrollPane(messageArea));
+        // message field
+        message = new JTextArea();
+        frame.add(new JScrollPane(message), BorderLayout.CENTER);
 
-        sendButton = new JButton("Send");
-        sendButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                sendEmail();
-            }
-        });
+        // send button
+        send = new JButton("Send");
+        send.addActionListener(e -> sendMessage());
+        frame.add(send, BorderLayout.SOUTH);
 
-        add(sendButton);
-
-        // pack and set visibility
-        pack();
-        setVisible(true);
     }
 
-    private void sendEmail() {
-        try {
-            FileWriter fw = new FileWriter("outbox.txt", true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter out = new PrintWriter(bw);
+    private void updateTitle() {
+        String title = subject.getText().isEmpty() ? "New Message" : subject.getText();
+        frame.setTitle(title);
+    }
 
-            out.println(messageArea.getText());
-            out.close();
-
-            // clear screen
-            toField.setText("");
-            ccField.setText("");
-            bccField.setText("");
-            subjectField.setText("");
-            messageArea.setText("");
-            fromBox.setSelectedIndex(0);
-
-            // confirmation message
-            JOptionPane.showMessageDialog(null, "Email sent!");
-
+    private void sendMessage() {
+        try (FileWriter writer = new FileWriter("outbox.txt")) {
+            writer.write(message.getText());
+            message.setText("");
+            frame.setTitle("New Message");
         } catch (IOException ioException) {
-            JOptionPane.showMessageDialog(null, "Error occurred while sending email.");
+            ioException.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-        new MailLayout();
+        SwingUtilities.invokeLater(() -> {
+            MailLayout app = new MailLayout();
+            app.frame.setVisible(true);
+        });
     }
 }
