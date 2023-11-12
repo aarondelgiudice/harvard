@@ -46,7 +46,6 @@ public class FifteenPuzzle extends JFrame {
             this.y = y;
         }
 
-        @Override
         public void actionPerformed(ActionEvent e) {
             if (Math.abs(emptyX - x) + Math.abs(emptyY - y) == 1) {
                 buttons[emptyX][emptyY].setText(buttons[x][y].getText());

@@ -11,7 +11,6 @@ public class TrafficLight extends JPanel {
     public TrafficLight() {
         setPreferredSize(new Dimension(250, 600));
         MouseAdapter mouseAdapter = new MouseAdapter() {
-            @Override
             public void mouseClicked(MouseEvent e) {
                 int height = getHeight();
                 int segment = height / 3;
@@ -38,7 +37,6 @@ public class TrafficLight extends JPanel {
         addMouseListener(mouseAdapter);
     }
 
-    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
