@@ -28,7 +28,7 @@ Solve either problem [3], or both problems [4] and [5].
 
 6. Submission: FifteenPuzzle.java
 
-7. Submission: Calculator.java, CalcBackend.java, CalcBackendTest.java
+7. Submission: Calculator.java, CalcBackend.java
 
 ## III. Extra Credit Problems
 
