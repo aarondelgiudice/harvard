@@ -1,3 +1,5 @@
+[comment]: <> (@David, apologies that this is incomplete. I wanted to submit at least part of a proposal so you could get an idea of what I'd like to work on/provide any feedback. I will submit a completed posposal as soon as I can.)
+
 # Term Project Proposal
 
 ## I. Overview
