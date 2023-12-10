@@ -16,7 +16,8 @@ public class TestSets {
       System.out.print("Type 3 to CREATE INTERSECTION (A * B)\n");
       System.out.print("Type 4 to CREATE UNION (A + B)\n");
       System.out.print("Type 5 to CREATE DIFFERENCE (A - B)\n");
-      System.out.print("Type 6 to RETURN THE CARDINALITY OF A SET");
+      System.out.print("Type 6 to RETURN THE CARDINALITY OF A SET\n");
+      System.out.print("Type 7 to CHECK IF A IS A SUBSET OF B\n");
       System.out.print("Type any OTHER # to EXIT PROGRAM \n\n");
       System.out.print("Command: ");
    }
@@ -65,6 +66,11 @@ public class TestSets {
                System.out.print(setA.cardinality());
                System.out.print("\n     Cardinality of B = ");
                System.out.print(setB.cardinality());
+               break;
+
+            case 7:
+               System.out.println("     Checking if A is a subset of B: " + setA.isSubset(setB));
+               System.out.println("     Checking if B is a subset of A: " + setB.isSubset(setA));
                break;
 
             default:

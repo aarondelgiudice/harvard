@@ -49,6 +49,23 @@ class Bitset {
         return count;
     }
 
+    public boolean isSubset(Bitset b) {
+        for (int i = 0; i < this.byteArray.length; i++) {
+            // Check that all bits set in 'a' are also set in 'b'.
+            if (i >= b.byteArray.length) {
+                if (this.byteArray[i] != 0) {
+                    return false; // Found a bit set in 'a' that is not in 'b'.
+                }
+            } else {
+                // Check that all bits set in 'a' are also set in 'b'.
+                if ((this.byteArray[i] & b.byteArray[i]) != this.byteArray[i]) {
+                    return false; // Found a bit set in 'a' that is not in 'b'.
+                }
+            }
+        }
+        return true;
+    }
+
     /***
      * No-arg constructor for the class, begins with a size of 0 and the
      * byte array set to null.
