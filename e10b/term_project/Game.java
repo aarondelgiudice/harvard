@@ -102,9 +102,6 @@ public class Game {
     }
 
     private void showRoundSelection(String gameName, String strategy) {
-        selectedGame = gameName;
-        selectedStrategy = strategy;
-
         panel.removeAll();
 
         JLabel label = new JLabel("Enter the number of rounds (default is 10):");
@@ -115,10 +112,19 @@ public class Game {
         roundInputField.setMaximumSize(roundInputField.getPreferredSize());
         panel.add(roundInputField);
 
-        JButton startButton = new JButton("Enter");
-        startButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        startButton.addActionListener(e -> startGameWithSelectedRounds(strategy, roundInputField.getText()));
-        panel.add(startButton);
+        // ActionListener for processing round input
+        ActionListener roundInputListener = e -> startGameWithSelectedRounds(strategy,
+                roundInputField.getText());
+
+        // Set the ActionListener for the text field to accept input on pressing Return
+        // key
+        roundInputField.addActionListener(roundInputListener);
+
+        // 'Enter' button now uses the same ActionListener
+        JButton enterButton = new JButton("Enter");
+        enterButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        enterButton.addActionListener(roundInputListener);
+        panel.add(enterButton);
 
         JButton backButton = new JButton("Back");
         backButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
