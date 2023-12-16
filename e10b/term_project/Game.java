@@ -35,8 +35,9 @@ public class Game {
         label.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         panel.add(label);
 
-        addGameButton("1. Prisoner's Dilemma", e -> showStrategyOptions());
-        addGameButton("2. Stag Hunt", e -> showStrategyOptions());
+        // Pass the game name to the method that will be called on button click
+        addGameButton("1. Prisoner's Dilemma", "Prisoner's Dilemma");
+        addGameButton("2. Stag Hunt", "Stag Hunt");
 
         JButton exitButton = new JButton("3. No (exit)");
         exitButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
@@ -47,14 +48,16 @@ public class Game {
         panel.repaint();
     }
 
-    private void addGameButton(String buttonText, ActionListener action) {
+    private void addGameButton(String buttonText, String gameName) {
         JButton button = new JButton(buttonText);
         button.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        button.addActionListener(action);
+        // Update the action listener to directly call showStrategyOptions with the
+        // gameName
+        button.addActionListener(e -> showStrategyOptions(gameName));
         panel.add(button);
     }
 
-    private void showStrategyOptions() {
+    private void showStrategyOptions(String gameName) {
         panel.removeAll();
 
         JLabel label = new JLabel("Select your opponent's strategy:");
@@ -63,7 +66,7 @@ public class Game {
 
         String[] strategies = { "Random", "Always Cooperate", "Always Compete", "Tit-for-tat" };
         for (String strategy : strategies) {
-            addStrategyButton(strategy, e -> selectStrategy(strategy));
+            addStrategyButton(strategy, e -> selectStrategy(gameName, strategy));
         }
 
         JButton backButton = new JButton("Back");
@@ -82,9 +85,10 @@ public class Game {
         panel.add(button);
     }
 
-    private void selectStrategy(String strategy) {
+    private void selectStrategy(String gameName, String strategy) {
         if (strategy.equals("Random")) {
-            showRoundSelection(strategy);
+            showRoundSelection(gameName, strategy);
+
         } else {
             try {
                 backend.selectStrategy();
@@ -95,7 +99,7 @@ public class Game {
         }
     }
 
-    private void showRoundSelection(String strategy) {
+    private void showRoundSelection(String gameName, String strategy) {
         panel.removeAll();
 
         JLabel label = new JLabel("Enter the number of rounds (default is 10):");
@@ -108,19 +112,19 @@ public class Game {
 
         JButton startButton = new JButton("Start Game");
         startButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        startButton.addActionListener(e -> startGameWithSelectedRounds(strategy, roundInputField.getText()));
+        startButton.addActionListener(e -> startGameWithSelectedRounds(gameName, strategy, roundInputField.getText()));
         panel.add(startButton);
 
         JButton backButton = new JButton("Back");
         backButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        backButton.addActionListener(e -> showStrategyOptions());
+        backButton.addActionListener(e -> showStrategyOptions(gameName));
         panel.add(backButton);
 
         panel.revalidate();
         panel.repaint();
     }
 
-    private void startGameWithSelectedRounds(String strategy, String roundsInput) {
+    private void startGameWithSelectedRounds(String gameName, String strategy, String roundsInput) {
         int numRounds = 10; // default value
         try {
             int inputVal = Integer.parseInt(roundsInput);
@@ -134,7 +138,8 @@ public class Game {
             JOptionPane.showMessageDialog(frame,
                     "Invalid input, expected a positive integer value. Setting game rounds to 10.");
         }
-        JOptionPane.showMessageDialog(frame, "Playing for " + numRounds + " rounds. Opponent strategy: " + strategy);
+        JOptionPane.showMessageDialog(frame,
+                "Playing " + gameName + " for " + numRounds + " rounds. Opponent strategy: " + strategy);
         // Here you will eventually start the game with the specified number of rounds
         // and strategy
     }
