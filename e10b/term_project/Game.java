@@ -6,6 +6,8 @@ public class Game {
     private GameBackend backend;
     private JFrame frame;
     private JPanel panel;
+    private String selectedGame;
+    private String selectedStrategy;
 
     public Game() {
         backend = new GameBackend();
@@ -100,6 +102,9 @@ public class Game {
     }
 
     private void showRoundSelection(String gameName, String strategy) {
+        selectedGame = gameName;
+        selectedStrategy = strategy;
+
         panel.removeAll();
 
         JLabel label = new JLabel("Enter the number of rounds (default is 10):");
@@ -110,9 +115,9 @@ public class Game {
         roundInputField.setMaximumSize(roundInputField.getPreferredSize());
         panel.add(roundInputField);
 
-        JButton startButton = new JButton("Start Game");
+        JButton startButton = new JButton("Enter");
         startButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        startButton.addActionListener(e -> startGameWithSelectedRounds(gameName, strategy, roundInputField.getText()));
+        startButton.addActionListener(e -> startGameWithSelectedRounds(strategy, roundInputField.getText()));
         panel.add(startButton);
 
         JButton backButton = new JButton("Back");
@@ -124,24 +129,54 @@ public class Game {
         panel.repaint();
     }
 
-    private void startGameWithSelectedRounds(String gameName, String strategy, String roundsInput) {
+    private void startGameWithSelectedRounds(String strategy, String roundsInput) {
         int numRounds = 10; // default value
         try {
             int inputVal = Integer.parseInt(roundsInput);
             if (inputVal > 0) {
                 numRounds = inputVal;
             } else {
-                JOptionPane.showMessageDialog(frame, "'" + roundsInput
-                        + "' is not a valid input, expected a positive integer value. Setting game rounds to 10.");
+                // Notify about invalid input in the main window
+                updateGameConfigPanel("Invalid input. Setting game rounds to 10.");
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(frame,
-                    "Invalid input, expected a positive integer value. Setting game rounds to 10.");
+            // Notify about invalid input in the main window
+            updateGameConfigPanel("Invalid input. Setting game rounds to 10.");
         }
-        JOptionPane.showMessageDialog(frame,
-                "Playing " + gameName + " for " + numRounds + " rounds. Opponent strategy: " + strategy);
-        // Here you will eventually start the game with the specified number of rounds
-        // and strategy
+
+        // Display game configuration in the main window
+        updateGameConfigPanel(
+                "Playing " + selectedGame + " for " + numRounds + " rounds. Opponent strategy: " + strategy);
+    }
+
+    private void updateGameConfigPanel(String message) {
+        panel.removeAll();
+
+        JLabel configLabel = new JLabel(message);
+        configLabel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        panel.add(configLabel);
+
+        // Add a 'Start Game' button
+        JButton startGameButton = new JButton("Start Game");
+        startGameButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        startGameButton.addActionListener(e -> startGame());
+        panel.add(startGameButton);
+
+        // Add a 'Back' button
+        JButton backButton = new JButton("Back");
+        backButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        backButton.addActionListener(e -> showStrategyOptions(selectedGame));
+        panel.add(backButton);
+
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void startGame() {
+        // Placeholder for starting the game
+        // This is where you would add the logic to initialize and start the game based
+        // on the selected settings
+        JOptionPane.showMessageDialog(frame, "Game started! (Game logic not implemented yet)");
     }
 
     public static void main(String[] args) {
