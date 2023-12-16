@@ -83,12 +83,60 @@ public class Game {
     }
 
     private void selectStrategy(String strategy) {
-        try {
-            backend.selectStrategy();
-        } catch (UnsupportedOperationException ex) {
-            JOptionPane.showMessageDialog(frame, "Strategy '" + strategy + "' not implemented yet.");
-            System.exit(0);
+        if (strategy.equals("Random")) {
+            showRoundSelection(strategy);
+        } else {
+            try {
+                backend.selectStrategy();
+            } catch (UnsupportedOperationException ex) {
+                JOptionPane.showMessageDialog(frame, "Strategy '" + strategy + "' not implemented yet.");
+                System.exit(0);
+            }
         }
+    }
+
+    private void showRoundSelection(String strategy) {
+        panel.removeAll();
+
+        JLabel label = new JLabel("Enter the number of rounds (default is 10):");
+        label.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        panel.add(label);
+
+        JTextField roundInputField = new JTextField(5);
+        roundInputField.setMaximumSize(roundInputField.getPreferredSize());
+        panel.add(roundInputField);
+
+        JButton startButton = new JButton("Start Game");
+        startButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        startButton.addActionListener(e -> startGameWithSelectedRounds(strategy, roundInputField.getText()));
+        panel.add(startButton);
+
+        JButton backButton = new JButton("Back");
+        backButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        backButton.addActionListener(e -> showStrategyOptions());
+        panel.add(backButton);
+
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void startGameWithSelectedRounds(String strategy, String roundsInput) {
+        int numRounds = 10; // default value
+        try {
+            int inputVal = Integer.parseInt(roundsInput);
+            if (inputVal > 0) {
+                numRounds = inputVal;
+            } else {
+                JOptionPane.showMessageDialog(frame, "'" + roundsInput
+                        + "' is not a valid input, expected a positive integer value. Setting game rounds to 10.");
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(frame,
+                    "Invalid input, expected a positive integer value. Setting game rounds to 10.");
+        }
+        JOptionPane.showMessageDialog(frame, "Playing for " + numRounds + " rounds. Opponent strategy: " + strategy);
+        // Here you will eventually start the game with the specified number of rounds
+        // and strategy
     }
 
     public static void main(String[] args) {
