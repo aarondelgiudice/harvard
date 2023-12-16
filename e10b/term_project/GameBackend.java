@@ -10,6 +10,11 @@ public class GameBackend {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
+    public void selectStrategy() {
+        // Placeholder for strategy selection logic
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
     public void exitGame() {
         System.exit(0);
     }
