@@ -55,11 +55,14 @@ public class Game {
         button.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         // Update the action listener to directly call showStrategyOptions with the
         // gameName
-        button.addActionListener(e -> showStrategyOptions(gameName));
+        button.addActionListener(e -> {
+            selectedGame = gameName; // Set the selected game
+            showStrategyOptions();
+        });
         panel.add(button);
     }
 
-    private void showStrategyOptions(String gameName) {
+    private void showStrategyOptions() {
         panel.removeAll();
 
         JLabel label = new JLabel("Select your opponent's strategy:");
@@ -68,7 +71,7 @@ public class Game {
 
         String[] strategies = { "Random", "Always Cooperate", "Always Compete", "Tit-for-tat" };
         for (String strategy : strategies) {
-            addStrategyButton(strategy, e -> selectStrategy(gameName, strategy));
+            addStrategyButton(strategy, e -> selectStrategy(selectedGame, strategy));
         }
 
         JButton backButton = new JButton("Back");
@@ -128,7 +131,7 @@ public class Game {
 
         JButton backButton = new JButton("Back");
         backButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        backButton.addActionListener(e -> showStrategyOptions(gameName));
+        backButton.addActionListener(e -> showStrategyOptions());
         panel.add(backButton);
 
         panel.revalidate();
@@ -142,20 +145,50 @@ public class Game {
             if (inputVal > 0) {
                 numRounds = inputVal;
             } else {
-                // Notify about invalid input in the main window
-                updateGameConfigPanel("Invalid input. Setting game rounds to 10.");
+                // Notify about invalid input and set the default number of rounds
+                updateGameConfigPanel("Invalid input. Setting game rounds to 10.", numRounds, strategy);
             }
         } catch (NumberFormatException e) {
-            // Notify about invalid input in the main window
-            updateGameConfigPanel("Invalid input. Setting game rounds to 10.");
+            // Notify about invalid input and set the default number of rounds
+            updateGameConfigPanel("Invalid input. Setting game rounds to 10.", numRounds, strategy);
         }
 
-        // Display game configuration in the main window
+        // Display game configuration and start the game with the selected settings
         updateGameConfigPanel(
-                "Playing " + selectedGame + " for " + numRounds + " rounds. Opponent strategy: " + strategy);
+                "Playing " + selectedGame + " for " + numRounds + " rounds. Opponent strategy: " + strategy, numRounds,
+                strategy);
+
+        startGame(numRounds, strategy);
     }
 
-    private void updateGameConfigPanel(String message) {
+    private void showGameScreen(String gameName, int numRounds, String strategy) {
+        panel.removeAll();
+
+        // Display the game premise
+        JTextArea premiseText = new JTextArea("Game premise placeholder text.");
+        premiseText.setWrapStyleWord(true);
+        premiseText.setLineWrap(true);
+        premiseText.setOpaque(false);
+        premiseText.setEditable(false);
+        premiseText.setFocusable(false);
+        premiseText.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        panel.add(premiseText);
+
+        // Display the rounds remaining
+        JLabel roundsLabel = new JLabel("Rounds remaining: " + numRounds);
+        roundsLabel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        panel.add(roundsLabel);
+
+        // Add buttons for player's decisions (e.g., "Confess" and "Don't Confess")
+        // Add ActionListener to these buttons to call backend.playRound with the
+        // decision
+        // Update the roundsLabel after each decision
+
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void updateGameConfigPanel(String message, int numRounds, String strategy) {
         panel.removeAll();
 
         JLabel configLabel = new JLabel(message);
@@ -165,24 +198,34 @@ public class Game {
         // Add a 'Start Game' button
         JButton startGameButton = new JButton("Start Game");
         startGameButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        startGameButton.addActionListener(e -> startGame());
+        startGameButton.addActionListener(e -> startGame(numRounds, strategy)); // Updated to pass correct arguments
         panel.add(startGameButton);
 
         // Add a 'Back' button
         JButton backButton = new JButton("Back");
         backButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        backButton.addActionListener(e -> showStrategyOptions(selectedGame));
+        backButton.addActionListener(e -> showStrategyOptions());
         panel.add(backButton);
 
         panel.revalidate();
         panel.repaint();
     }
 
-    private void startGame() {
-        // Placeholder for starting the game
-        // This is where you would add the logic to initialize and start the game based
-        // on the selected settings
-        JOptionPane.showMessageDialog(frame, "Game started! (Game logic not implemented yet)");
+    private void startGame(int numRounds, String strategy) {
+        // Start the game with the specified number of rounds
+        try {
+            if (selectedGame.equals("Prisoner's Dilemma")) {
+                backend.startPrisonersDilemma(numRounds);
+            } else if (selectedGame.equals("Stag Hunt")) {
+                backend.startStagHunt();
+            }
+        } catch (UnsupportedOperationException e) {
+            JOptionPane.showMessageDialog(frame, "Game '" + selectedGame + "' not implemented yet.");
+            System.exit(0);
+        }
+
+        // Show the game screen
+        showGameScreen(selectedGame, numRounds, strategy);
     }
 
     public static void main(String[] args) {
