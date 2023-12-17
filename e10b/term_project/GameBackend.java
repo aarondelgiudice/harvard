@@ -6,10 +6,21 @@ public class GameBackend {
     private int[][] payoffMatrix;
     private int playerScore;
     private int computerScore;
+    private String computerDecision;
+    private boolean roundPlayed = false;
+    private int totalRounds;
+    private String playerLastDecision;
 
     public GameBackend() {
-        // Initialize the payoff matrix here
-        initializePayoffMatrix();
+    }
+
+    public String getComputerDecision() {
+        // Logic to determine the computer's decision
+        if (computerDecision == null) {
+            // For now, decision is random. Replace this with your game's logic.
+            computerDecision = (new Random().nextBoolean()) ? "Confess" : "Do not confess";
+        }
+        return computerDecision;
     }
 
     private void initializePayoffMatrix() {
@@ -43,12 +54,11 @@ public class GameBackend {
 
     public void startPrisonersDilemma(int rounds) {
         this.numRounds = rounds;
-        this.currentSentence = generateSentence(); // Generate sentence at game start
-        initializePayoffMatrix(); // Reinitialize payoff matrix with the new sentence
-        playerScore = 0; // Reset player's score at the start of the game
-        computerScore = 0; // Reset computer's score at the start of the game
-
-        // Additional setup for the game (if needed)
+        this.totalRounds = rounds;
+        this.currentSentence = generateSentence(); // Set sentence for the first round
+        initializePayoffMatrix(); // Initialize for the first round
+        playerScore = 0;
+        computerScore = 0;
     }
 
     public void startStagHunt() {
@@ -62,19 +72,32 @@ public class GameBackend {
     }
 
     public void playRound(String playerDecision) {
-        // Convert decisions to 0 or 1
-        int playerChoice = playerDecision.equals("Confess") ? 1 : 0;
-        int computerChoice = 0;// Determine the computer's choice (0 or 1)
+        roundPlayed = true;
 
-        // Update the scores based on the matrix
+        currentSentence = generateSentence(); // Ensure currentSentence is set for each round
+        initializePayoffMatrix(); // Initialize payoff matrix for the current round
+
+        // Update the player's last decision
+        this.playerLastDecision = playerDecision;
+
+        int playerChoice = playerDecision.equals("Confess") ? 1 : 0;
+        String computerDecision = getComputerDecision();
+        int computerChoice = computerDecision.equals("Confess") ? 1 : 0;
+
+        // Update scores
         playerScore += payoffMatrix[playerChoice][computerChoice];
         computerScore += payoffMatrix[computerChoice][playerChoice];
 
-        this.numRounds--; // Update the rounds
-        // Handle the end of the game
+        this.numRounds--;
+        this.computerDecision = null;
+
         if (this.numRounds <= 0) {
             endGame();
         }
+    }
+
+    public boolean hasRoundBeenPlayed() {
+        return roundPlayed;
     }
 
     public int getCurrentSentence() {
@@ -92,8 +115,25 @@ public class GameBackend {
         return this.numRounds;
     }
 
+    public int getTotalRounds() {
+        return this.totalRounds; // Assuming there is a member variable totalRounds set at the beginning of the
+                                 // game
+    }
+
+    public boolean getPlayerLastDecision() {
+        // Return the last decision made by the player
+        // This method assumes you are tracking the player's last decision
+        // If player's last decision was "Confess", return true, otherwise return false
+        return this.playerLastDecision.equals("Confess");
+    }
+
     private void endGame() {
-        // Logic to conclude the game
+        // Logic to conclude the game and determine the winner
+        String winner = (playerScore < computerScore) ? "Player" : "Computer";
+        if (playerScore == computerScore) {
+            winner = "Tie";
+        }
+        System.out.println("Game over! Winner: " + winner);
         exitGame();
     }
 

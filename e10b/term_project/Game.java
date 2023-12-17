@@ -8,6 +8,10 @@ public class Game {
     private JPanel panel;
     private String selectedGame;
     private String selectedStrategy;
+    private JTextArea premiseText;
+    private JLabel roundsLabel;
+    private JLabel scoreLabel;
+    private JTextArea roundOutcomeText;
 
     public Game() {
         backend = new GameBackend();
@@ -133,40 +137,89 @@ public class Game {
     }
 
     private void showGameScreen(int numRounds) {
-        panel.removeAll();
+        // Clear the panel before adding new components only if it's the first time
+        if (!backend.hasRoundBeenPlayed()) {
+            panel.removeAll();
+        }
 
-        // Generate a random sentence for this round (handled by GameBackend)
+        // Initialize the roundOutcomeText if it's null
+        if (roundOutcomeText == null) {
+            roundOutcomeText = new JTextArea();
+            roundOutcomeText.setWrapStyleWord(true);
+            roundOutcomeText.setLineWrap(true);
+            roundOutcomeText.setOpaque(false);
+            roundOutcomeText.setEditable(false);
+            roundOutcomeText.setFocusable(false);
+            roundOutcomeText.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+            panel.add(roundOutcomeText);
+        }
+
+        // Only update the round outcome text if a round has been played
+        if (backend.hasRoundBeenPlayed()) {
+            String computerDecision = backend.getComputerDecision();
+            roundOutcomeText.setText(
+                    "Round outcome:\n" +
+                            "Your choice: " + backend.getPlayerLastDecision() + "\n" +
+                            "Opponent's choice: " + computerDecision + "\n" +
+                            "Your Score: " + backend.getPlayerScore() + " | Computer Score: "
+                            + backend.getComputerScore());
+        } else {
+            // If no rounds have been played yet, we can set this text to empty or to a
+            // welcome message
+            roundOutcomeText.setText("");
+        }
+
+        if (premiseText == null) {
+            premiseText = new JTextArea();
+            premiseText.setWrapStyleWord(true);
+            premiseText.setLineWrap(true);
+            premiseText.setOpaque(false);
+            premiseText.setEditable(false);
+            premiseText.setFocusable(false);
+            premiseText.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+            panel.add(premiseText);
+        }
+
+        if (roundsLabel == null) {
+            roundsLabel = new JLabel();
+            roundsLabel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+            panel.add(roundsLabel);
+        }
+
+        if (scoreLabel == null) {
+            scoreLabel = new JLabel();
+            scoreLabel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+            panel.add(scoreLabel);
+        }
+
+        // Update the text of the premiseText, roundsLabel, and scoreLabel instead of
+        // creating new ones
         int sentence = backend.getCurrentSentence();
         int midSentence = backend.getMidSentence();
         int minSentence = backend.getMinSentence();
-
-        JTextArea premiseText = new JTextArea(
+        premiseText.setText(
                 "Welcome to the Prisoner's Dilemma.\n" +
                         "In this round, your sentence is: " + sentence + " years.\n" +
                         "Will you confess or not?\n" +
-                        "If you confess, but your opponent does not, you will receive the maximum sentence of"
+                        "If you confess, but your opponent does not, you will receive the maximum sentence of "
                         + sentence + " years, and your opponent will go free.\n" +
                         "If you do not confess, but your opponent does, you will receive no sentence and be let go, but your opponent will receive the maximum sentence of "
                         + sentence + " years.\n" +
                         "If you both confess, you will both receive a moderate sentence of " + midSentence + " years.\n"
                         +
-                        "If niether of you confess, you will both receive the minimum sentence of " + minSentence
+                        "If neither of you confess, you will both receive the minimum sentence of " + minSentence
                         + " years.\n" +
                         "(Remember, Your opponent's strategy is: " + selectedStrategy + ".)");
-        premiseText.setWrapStyleWord(true);
-        premiseText.setLineWrap(true);
-        premiseText.setOpaque(false);
-        premiseText.setEditable(false);
-        premiseText.setFocusable(false);
-        premiseText.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        panel.add(premiseText);
 
-        JLabel roundsLabel = new JLabel("Rounds remaining: " + numRounds);
-        roundsLabel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        panel.add(roundsLabel);
+        roundsLabel.setText("Rounds remaining: " + numRounds);
+        scoreLabel.setText(
+                "Your Score: " + backend.getPlayerScore() + " | Computer Score: " + backend.getComputerScore());
 
-        addDecisionButton("1. Confess", roundsLabel);
-        addDecisionButton("2. Do not confess", roundsLabel);
+        // Add decision buttons only if it's the first time
+        if (!backend.hasRoundBeenPlayed()) {
+            addDecisionButton("1. Confess", roundsLabel);
+            addDecisionButton("2. Do not confess", roundsLabel);
+        }
 
         panel.revalidate();
         panel.repaint();
@@ -175,31 +228,66 @@ public class Game {
     private void addDecisionButton(String decisionText, JLabel roundsLabel) {
         JButton decisionButton = new JButton(decisionText);
         decisionButton.addActionListener(e -> {
-            backend.playRound(decisionText);
-            updateRound(roundsLabel);
+            backend.playRound(decisionText); // Player's decision is sent to backend
+            updateRound(decisionText, roundsLabel); // Update the UI based on the new game state
         });
-        panel.add(decisionButton);
+
+        // Only add the button if it's the first round
+        if (!backend.hasRoundBeenPlayed()) {
+            panel.add(decisionButton);
+        }
     }
 
-    private void updateRound(JLabel roundsLabel) {
+    private void updateRound(String playerDecision, JLabel roundsLabel) {
         int currentRounds = backend.getRemainingRounds();
-        roundsLabel.setText("Rounds remaining: " + currentRounds);
-
-        // Update scores
+        String computerDecision = backend.getComputerDecision();
         int playerScore = backend.getPlayerScore();
         int computerScore = backend.getComputerScore();
-        JLabel scoreLabel = new JLabel("Your Score: " + playerScore + " | Computer Score: " + computerScore);
-        scoreLabel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        panel.add(scoreLabel);
 
-        if (currentRounds <= 0) {
+        // Update the UI with the round's outcome
+        if (roundOutcomeText != null) {
+            roundOutcomeText.setText(
+                    "Round outcome:\n" +
+                            "Your choice: " + playerDecision + "\n" +
+                            "Opponent's choice: " + (computerDecision.equals("1") ? "Confess" : "Do not confess") + "\n"
+                            +
+                            "Your Score: " + playerScore + " | Computer Score: " + computerScore);
+        }
+
+        // Update rounds and scores
+        roundsLabel.setText("Rounds remaining: " + currentRounds);
+        scoreLabel.setText("Your Score: " + playerScore + " | Computer Score: " + computerScore);
+
+        // Revalidate and repaint the panel to show the updates
+        panel.revalidate();
+        panel.repaint();
+
+        // Determine next steps based on game state
+        if (backend.getRemainingRounds() > 0) {
+            prepareForNextRound(backend.getRemainingRounds());
+        } else {
             endGame();
         }
     }
 
+    private void prepareForNextRound(int currentRounds) {
+        // Remove decision buttons or any other round-specific components
+        // For example:
+        // panel.remove(decisionButton1);
+        // panel.remove(decisionButton2);
+
+        // Add new decision buttons for the next round
+        // addDecisionButton("1. Confess", roundsLabel);
+        // addDecisionButton("2. Do not confess", roundsLabel);
+
+        // Call showGameScreen to refresh the UI for the next round
+        showGameScreen(currentRounds);
+    }
+
     private void endGame() {
-        // Placeholder for ending the game logic
-        JOptionPane.showMessageDialog(frame, "Game over!");
+        // Show game over message or any other finalization logic
+        JOptionPane.showMessageDialog(frame, "Game over! Final scores - Player: " + backend.getPlayerScore()
+                + ", Computer: " + backend.getComputerScore());
     }
 
     public static void main(String[] args) {
