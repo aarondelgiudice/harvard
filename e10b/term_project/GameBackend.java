@@ -4,6 +4,8 @@ public class GameBackend {
     private int numRounds;
     private int currentSentence;
     private int[][] payoffMatrix;
+    private int playerScore;
+    private int computerScore;
 
     public GameBackend() {
         // Initialize the payoff matrix here
@@ -31,10 +33,21 @@ public class GameBackend {
         return payoffMatrix[0][0]; // Both players cooperating
     }
 
+    public int getPlayerScore() {
+        return playerScore;
+    }
+
+    public int getComputerScore() {
+        return computerScore;
+    }
+
     public void startPrisonersDilemma(int rounds) {
         this.numRounds = rounds;
         this.currentSentence = generateSentence(); // Generate sentence at game start
         initializePayoffMatrix(); // Reinitialize payoff matrix with the new sentence
+        playerScore = 0; // Reset player's score at the start of the game
+        computerScore = 0; // Reset computer's score at the start of the game
+
         // Additional setup for the game (if needed)
     }
 
@@ -53,7 +66,9 @@ public class GameBackend {
         int playerChoice = playerDecision.equals("Confess") ? 1 : 0;
         int computerChoice = 0;// Determine the computer's choice (0 or 1)
 
-        int playerOutcome = payoffMatrix[playerChoice][computerChoice];
+        // Update the scores based on the matrix
+        playerScore += payoffMatrix[playerChoice][computerChoice];
+        computerScore += payoffMatrix[computerChoice][playerChoice];
 
         this.numRounds--; // Update the rounds
         // Handle the end of the game

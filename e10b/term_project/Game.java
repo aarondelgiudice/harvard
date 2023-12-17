@@ -185,6 +185,13 @@ public class Game {
         int currentRounds = backend.getRemainingRounds();
         roundsLabel.setText("Rounds remaining: " + currentRounds);
 
+        // Update scores
+        int playerScore = backend.getPlayerScore();
+        int computerScore = backend.getComputerScore();
+        JLabel scoreLabel = new JLabel("Your Score: " + playerScore + " | Computer Score: " + computerScore);
+        scoreLabel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        panel.add(scoreLabel);
+
         if (currentRounds <= 0) {
             endGame();
         }
