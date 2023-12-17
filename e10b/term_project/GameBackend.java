@@ -3,9 +3,38 @@ import java.util.Random;
 public class GameBackend {
     private int numRounds;
     private int currentSentence;
+    private int[][] payoffMatrix;
+
+    public GameBackend() {
+        // Initialize the payoff matrix here
+        initializePayoffMatrix();
+    }
+
+    private void initializePayoffMatrix() {
+        int midSentence = currentSentence / 2;
+        int minSentence = midSentence / 2;
+
+        payoffMatrix = new int[][] {
+                { minSentence, 0 }, // Player cooperates, Computer cooperates/defects
+                { currentSentence, midSentence } // Player defects, Computer cooperates/defects
+        };
+
+    }
+
+    public int getMidSentence() {
+        // Access the midSentence from the payoff matrix
+        return payoffMatrix[1][1]; // Both players defecting
+    }
+
+    public int getMinSentence() {
+        // Access the minSentence from the payoff matrix
+        return payoffMatrix[0][0]; // Both players cooperating
+    }
 
     public void startPrisonersDilemma(int rounds) {
         this.numRounds = rounds;
+        this.currentSentence = generateSentence(); // Generate sentence at game start
+        initializePayoffMatrix(); // Reinitialize payoff matrix with the new sentence
         // Additional setup for the game (if needed)
     }
 
@@ -20,8 +49,11 @@ public class GameBackend {
     }
 
     public void playRound(String playerDecision) {
-        // Game logic based on the player's decision
-        // Update the game state
+        // Convert decisions to 0 or 1
+        int playerChoice = playerDecision.equals("Confess") ? 1 : 0;
+        int computerChoice = 0;// Determine the computer's choice (0 or 1)
+
+        int playerOutcome = payoffMatrix[playerChoice][computerChoice];
 
         this.numRounds--; // Update the rounds
         // Handle the end of the game
@@ -31,11 +63,14 @@ public class GameBackend {
     }
 
     public int getCurrentSentence() {
-        // Logic to generate a random sentence
-        if (this.numRounds == 10) { // For example, generate new sentence only at the start
-            this.currentSentence = new Random().nextInt(16) + 5; // Random number between 5 and 20
+        if (currentSentence == -1) {
+            currentSentence = generateSentence(); // Generate if not already set
         }
-        return this.currentSentence;
+        return currentSentence;
+    }
+
+    private int generateSentence() {
+        return new Random().nextInt(16) + 5; // Random number between 5 and 20
     }
 
     public int getRemainingRounds() {

@@ -135,15 +135,34 @@ public class Game {
     private void showGameScreen(int numRounds) {
         panel.removeAll();
 
-        JTextArea premiseText = new JTextArea("Game premise placeholder text.");
-        // Configure premiseText...
+        // Generate a random sentence for this round (handled by GameBackend)
+        int sentence = backend.getCurrentSentence();
+        int midSentence = backend.getMidSentence();
+        int minSentence = backend.getMinSentence();
+
+        JTextArea premiseText = new JTextArea(
+                "Welcome to the Prisoner's Dilemma.\n" +
+                        "In this round, your sentence is: " + sentence + " years.\n" +
+                        "Will you confess or not?\n" +
+                        "If you confess, but your opponent does not, you will receive the maximum sentence of"
+                        + sentence + " years, and your opponent will go free.\n" +
+                        "If you do not confess, but your opponent does, you will receive no sentence and be let go, but your opponent will receive the maximum sentence of "
+                        + sentence + " years.\n" +
+                        "If you both confess, you will both receive a moderate sentence of " + midSentence + " years.\n"
+                        +
+                        "If niether of you confess, you will both receive the minimum sentence of " + minSentence
+                        + " years.\n" +
+                        "(Remember, Your opponent's strategy is: " + selectedStrategy + ".)");
+        premiseText.setWrapStyleWord(true);
+        premiseText.setLineWrap(true);
+        premiseText.setOpaque(false);
+        premiseText.setEditable(false);
+        premiseText.setFocusable(false);
+        premiseText.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         panel.add(premiseText);
 
-        int sentence = backend.getCurrentSentence();
-        JLabel sentenceLabel = new JLabel("Sentence for this round: " + sentence + " years");
-        panel.add(sentenceLabel);
-
         JLabel roundsLabel = new JLabel("Rounds remaining: " + numRounds);
+        roundsLabel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         panel.add(roundsLabel);
 
         addDecisionButton("1. Confess", roundsLabel);
