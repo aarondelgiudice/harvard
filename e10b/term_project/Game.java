@@ -240,21 +240,24 @@ public class Game {
 
     private void updateRound(String playerDecision, JLabel roundsLabel) {
         int currentRounds = backend.getRemainingRounds();
-        String computerDecision = backend.getComputerDecision();
+        String computerDecision = backend.getComputerDecision(); // Method to get computer's last decision
         int playerScore = backend.getPlayerScore();
         int computerScore = backend.getComputerScore();
+
+        // Convert the boolean decision to a String
+        String playerDecisionText = playerDecision.equals("1. Confess") ? "Confess" : "Do not confess";
 
         // Update the UI with the round's outcome
         if (roundOutcomeText != null) {
             roundOutcomeText.setText(
                     "Round outcome:\n" +
-                            "Your choice: " + playerDecision + "\n" +
-                            "Opponent's choice: " + (computerDecision.equals("1") ? "Confess" : "Do not confess") + "\n"
-                            +
+                            "Your choice: " + backend.getPlayerLastDecision() + "\n" + // Directly use the String
+                            "Opponent's choice: " + computerDecision + "\n" +
                             "Your Score: " + playerScore + " | Computer Score: " + computerScore);
+
         }
 
-        // Update rounds and scores
+        // Update the rounds remaining and score labels
         roundsLabel.setText("Rounds remaining: " + currentRounds);
         scoreLabel.setText("Your Score: " + playerScore + " | Computer Score: " + computerScore);
 
@@ -263,10 +266,10 @@ public class Game {
         panel.repaint();
 
         // Determine next steps based on game state
-        if (backend.getRemainingRounds() > 0) {
-            prepareForNextRound(backend.getRemainingRounds());
-        } else {
+        if (currentRounds <= 0) {
             endGame();
+        } else {
+            prepareForNextRound(currentRounds); // Pass current rounds to prepare UI for next round
         }
     }
 

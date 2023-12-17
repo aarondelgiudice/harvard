@@ -1,5 +1,11 @@
 import java.util.Random;
 
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import java.awt.BorderLayout;
+
 public class GameBackend {
     private int numRounds;
     private int currentSentence;
@@ -120,21 +126,39 @@ public class GameBackend {
                                  // game
     }
 
-    public boolean getPlayerLastDecision() {
-        // Return the last decision made by the player
+    public String getPlayerLastDecision() {
+        // Return the last decision made by the player as a String
         // This method assumes you are tracking the player's last decision
-        // If player's last decision was "Confess", return true, otherwise return false
-        return this.playerLastDecision.equals("Confess");
+        return this.playerLastDecision; // Assuming playerLastDecision is a String variable
     }
 
     private void endGame() {
         // Logic to conclude the game and determine the winner
-        String winner = (playerScore < computerScore) ? "Player" : "Computer";
+        String winner = (playerScore < computerScore) ? "Player 🎉" : "Computer 😭";
         if (playerScore == computerScore) {
-            winner = "Tie";
+            winner = "Tie ⚖️";
         }
-        System.out.println("Game over! Winner: " + winner);
-        exitGame();
+
+        // Create a JDialog to show the result
+        JDialog resultDialog = new JDialog();
+        resultDialog.setTitle("Game Over");
+        resultDialog.setModal(true);
+        resultDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        resultDialog.setSize(300, 200);
+        resultDialog.setLayout(new BorderLayout());
+
+        JLabel resultLabel = new JLabel("Game over! Winner: " + winner, SwingConstants.CENTER);
+        resultDialog.add(resultLabel, BorderLayout.CENTER);
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(e -> System.exit(0));
+        resultDialog.add(closeButton, BorderLayout.PAGE_END);
+
+        // Center the dialog in the screen
+        resultDialog.setLocationRelativeTo(null);
+
+        // Display the dialog
+        resultDialog.setVisible(true);
     }
 
     public void exitGame() {
