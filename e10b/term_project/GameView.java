@@ -1,7 +1,6 @@
 import javax.swing.*;
-import java.awt.event.ActionListener;
 import java.awt.Dimension;
-import java.awt.Color;
+import java.awt.event.ActionListener;
 
 public class GameView {
     private JFrame frame;
@@ -21,6 +20,7 @@ public class GameView {
     private JLabel computerScoreLabel;
     private String selectedGameType;
     private JTextArea premiseTextArea;
+    private JScrollPane premiseScrollPane;
 
     public GameView(Game controller) {
         this.controller = controller;
@@ -165,16 +165,15 @@ public class GameView {
         panel.add(strategyLabel);
 
         premiseTextArea = new JTextArea(4, 20);
-        // premiseTextArea.setWrapStyleWord(true);
-        // premiseTextArea.setLineWrap(true);
+        premiseTextArea.setLineWrap(true);
+        premiseTextArea.setWrapStyleWord(true);
         premiseTextArea.setEditable(false);
         premiseTextArea.setOpaque(false);
         premiseTextArea.setFocusable(false);
-        // premiseTextArea.setMaximumSize(new Dimension(300, 100));
-        // premiseTextArea.setPreferredSize(new Dimension(300, 100));
 
-        JScrollPane premiseScrollPane = new JScrollPane(premiseTextArea);
-        // premiseScrollPane.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+        // Create a JScrollPane around premiseTextArea
+        premiseScrollPane = new JScrollPane(premiseTextArea);
+        premiseScrollPane.setBorder(null);
         premiseScrollPane.setOpaque(false);
         premiseScrollPane.getViewport().setOpaque(false);
 
